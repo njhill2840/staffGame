@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="loadGameArea()">
+<script>
+
+var myGamePiece;
+var myScore;
+var points;
+var randomValue;
+
+var gamePieceLineE = new component(30, 30, "red", 490, 210);
+var gamePieceLineG = new component(30, 30, "red", 490, 170);
+var gamePieceLineB = new component(30, 30, "red", 490, 130);
+var gamePieceLineD = new component(30, 30, "red", 490, 90);
+var gamePieceLineF = new component(30, 30, "red", 490, 50);
+var gamePieceSpaceF = new component(30, 30, "red", 490, 190);
+var gamePieceSpaceA = new component(30, 30, "red", 490, 150);
+var gamePieceSpaceC = new component(30, 30, "red", 490, 110);
+var gamePieceSpaceE = new component(30, 30, "red", 490, 70);
+
+var endLine; <!--left side of screen, game over if note touches-->
+var staffLine1; <!--bottom line, E-->
+var staffLine2;
+var staffLine3;
+var staffLine4;
+var staffLine5; <!--top line, F-->
+
+const notes = [gamePieceLineE, gamePieceLineG, gamePieceLineB, gamePieceLineD, gamePieceLineF, gamePieceSpaceF, gamePieceSpaceA, gamePieceSpaceC, gamePieceSpaceE];
+
+function loadGameArea() {
+		staffLine1 = new component(480, 10, "black", 0, 220);
+		staffLine2 = new component(480, 10, "black", 0, 180);
+		staffLine3 = new component(480, 10, "black", 0, 140);
+		staffLine4 = new component(480, 10, "black", 0, 100);
+		staffLine5= new component(480, 10, "black", 0, 60);
+		endLine  = new component(10, 290, "blue", 0, 0);
+		myScore = new component("30px", "Consolas", "black", 310, 40, "text");
+		myGameArea.load();
+        staffLine1.update();
+        staffLine2.update();
+        staffLine3.update();
+        staffLine4.update();
+        staffLine5.update();
+        endLine.update();
+        myScore.text="SCORE: ";
+        myScore.update();
+        myGamePiece.update();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    load : function() {
+        this.canvas.width = 480;
+        this.canvas.height = 290;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    },
+    start : function() {
+    	this.interval = setInterval(updateGameArea, 20);
+    },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+    this.width = width;
+    this.height = height;
+    this.speedX = -1;
+    this.x = x;
+    this.y = y;
+    this.type = type;
+    this.update = function() {
+        ctx = myGameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var crash = true;
+        if (myleft > otherright) {
+            crash = false;
+        }
+        return crash;
+    }
+}
+
+
+
+
+function updateGameArea() {
+    if (myGamePiece.crashWith(endLine)) {
+        myGameArea.stop();
+        alert("Game Over! Score: " + points + "\nClick Start to play again!");
+        randomValue=null;
+        myGamePiece.update();
+    } else {
+        myGameArea.clear();
+        staffLine1.update();
+        staffLine2.update();
+        staffLine3.update();
+        staffLine4.update();
+        staffLine5.update();
+        endLine.update();
+        myGamePiece.x += myGamePiece.speedX;
+        myScore.text="SCORE: " + points;
+        myScore.update();
+        myGamePiece.update();
+    }
+}
+
+function newNote() { //generate a new note on screen
+	randomValue = (Math.floor(Math.random() * notes.length));
+    myGamePiece=notes[randomValue];
+    myGamePiece.x=490;
+	myGameArea.stop();
+	myGameArea.start();
+}
+
+function checkButton(clicked_id) { //check for button input--start or answer
+	if (clicked_id=="Start") {
+        newNote();
+        points=0;
+    } else if (clicked_id=="E" && randomValue==0) {
+    	points += 1;
+    	newNote();
+    } else if (clicked_id=="E" && randomValue==8) {
+    	points += 1;
+        newNote();
+    } else if (clicked_id=="F" && randomValue==4) {
+    	points += 1;
+        newNote();
+ 	} else if (clicked_id=="F" && randomValue==5) {
+    	points += 1;
+        newNote();
+   	} else if (clicked_id=="G" && randomValue==1) {
+    	points += 1;
+        newNote();
+    } else if (clicked_id=="A" && randomValue==6) {
+    	points += 1;
+        newNote();
+   	} else if (clicked_id=="B" && randomValue==2) {
+    	points += 1;
+        newNote();
+   	} else if (clicked_id=="C" && randomValue==7) {
+    	points += 1;
+        newNote();
+   	} else if (clicked_id=="D" && randomValue==3) {
+    	points += 1;
+        newNote();
+   	} else {
+    	//do nothing
+    }
+}
+
+
+</script>
+<div style="text-align:center;width:480px;">
+    <button id="A" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">A</button>
+    <button id="B" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">B</button>
+    <button id="C" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">C</button>
+    <button id="D" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">D</button>
+    <button id="E" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">E</button>
+    <button id="F" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">F</button>
+    <button id="G" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">G</button> <br><br>
+    <button id="Start" onClick="checkButton(this.id)" ontouchstart="checkButton(this.id)">Start</button>
+</div>
+<p style="text-align:center;width:480px;">Use the buttons to select the note name. If the note hits the blue line on the<br> left side of the screen, it's game over!</p>
+</body>
+</html>
