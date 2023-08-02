@@ -16,6 +16,7 @@ var myGamePiece;
 var myScore;
 var points;
 var randomValue;
+var pieceSpeed = -1;
 
 var gamePieceLineE = new component(30, 30, "red", 490, 210);
 var gamePieceLineG = new component(30, 30, "red", 490, 170);
@@ -78,7 +79,6 @@ var myGameArea = {
 function component(width, height, color, x, y, type) {
     this.width = width;
     this.height = height;
-    this.speedX = -1;
     this.x = x;
     this.y = y;
     this.type = type;
@@ -132,6 +132,10 @@ function newNote() { //generate a new note on screen
 	randomValue = (Math.floor(Math.random() * notes.length));
     myGamePiece=notes[randomValue];
     myGamePiece.x=490;
+    if (points % 20 ==0) {
+        pieceSpeed-= 1
+        }
+    myGamePiece.speedX=pieceSpeed;
 	myGameArea.stop();
 	myGameArea.start();
 }
