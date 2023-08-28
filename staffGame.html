@@ -136,8 +136,9 @@ function component(width, height, color, x, y, type) {
 function updateGameArea() {
     if (myGamePiece.crashWith(endLine)) {
         myGameArea.stop();
-        alert("Game Over! Score: " + points + "\nClick Start to play again!" + "\n" + selectedClef);
+        alert("Game Over! " + selectedClef + " Clef Score: " + points + "\nClick Start to play again!");
         randomValue=null;
+        document.getElementById("clef-selection").disabled = false;
         myGamePiece.update();
     } else {
         myGameArea.clear();
@@ -168,6 +169,7 @@ function newNote() { //generate a new note on screen
 
 function getClef() {
         selectBox = document.getElementById("clef-selection");
+        document.getElementById("clef-selection").disabled = true;
         return selectedClef = selectBox.value;
 }
 
