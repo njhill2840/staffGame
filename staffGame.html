@@ -37,6 +37,7 @@ p {
 <script>
 
 var myGamePiece;
+var ledgerLine;
 var myScore;
 var points;
 var randomValue;
@@ -44,15 +45,19 @@ var pieceSpeed;
 var selectBox;
 var selectedClef;
 
-var gamePieceLineE = new component(30, 30, "red", 490, 210);
-var gamePieceLineG = new component(30, 30, "red", 490, 170);
-var gamePieceLineB = new component(30, 30, "red", 490, 130);
-var gamePieceLineD = new component(30, 30, "red", 490, 90);
-var gamePieceLineF = new component(30, 30, "red", 490, 50);
-var gamePieceSpaceF = new component(30, 30, "red", 490, 190);
-var gamePieceSpaceA = new component(30, 30, "red", 490, 150);
-var gamePieceSpaceC = new component(30, 30, "red", 490, 110);
-var gamePieceSpaceE = new component(30, 30, "red", 490, 70);
+var gamePieceLine1 = new component(30, 30, "red", 490, 210);
+var gamePieceLine2 = new component(30, 30, "red", 490, 170);
+var gamePieceLine3 = new component(30, 30, "red", 490, 130);
+var gamePieceLine4 = new component(30, 30, "red", 490, 90);
+var gamePieceLine5 = new component(30, 30, "red", 490, 50);
+var gamePieceSpace1 = new component(30, 30, "red", 490, 190);
+var gamePieceSpace2 = new component(30, 30, "red", 490, 150);
+var gamePieceSpace3 = new component(30, 30, "red", 490, 110);
+var gamePieceSpace4 = new component(30, 30, "red", 490, 70);
+var gamePieceLedgerSpaceAbove1 = new component(30, 30, "red", 490, 30);
+var gamePieceLedgerSpaceBelow1 = new component(30, 30, "red", 490, 230);
+var gamePieceLedgerLineBelow1 = new component(30, 30, "red", 490, 250);
+var ledgerLineBelow1 = new component(50, 10, "black", 480, 260);
 
 var endLine; <!--left side of screen, game over if note touches-->
 var staffLine1; <!--bottom line, E-->
@@ -61,7 +66,7 @@ var staffLine3;
 var staffLine4;
 var staffLine5; <!--top line, F-->
 
-const notes = [gamePieceLineE, gamePieceLineG, gamePieceLineB, gamePieceLineD, gamePieceLineF, gamePieceSpaceF, gamePieceSpaceA, gamePieceSpaceC, gamePieceSpaceE];
+const notes = [gamePieceLine1, gamePieceLine2, gamePieceLine3, gamePieceLine4, gamePieceLine5, gamePieceSpace1, gamePieceSpace2, gamePieceSpace3, gamePieceSpace4,gamePieceLedgerSpaceAbove1, gamePieceLedgerSpaceBelow1, gamePieceLedgerLineBelow1];
 
 function loadGameArea() {
 		staffLine1 = new component(480, 10, "black", 0, 220);
@@ -81,6 +86,7 @@ function loadGameArea() {
         myScore.text="SCORE: ";
         myScore.update();
         myGamePiece.update();
+        ledgerLine.update();
 }
 
 var myGameArea = {
@@ -140,6 +146,7 @@ function updateGameArea() {
         randomValue=null;
         document.getElementById("clef-selection").disabled = false;
         myGamePiece.update();
+        ledgerLine.update();
     } else {
         myGameArea.clear();
         staffLine1.update();
@@ -149,9 +156,11 @@ function updateGameArea() {
         staffLine5.update();
         endLine.update();
         myGamePiece.x += myGamePiece.speedX;
+        ledgerLine.x += ledgerLine.speedX;
         myScore.text="SCORE: " + points;
         myScore.update();
         myGamePiece.update();
+        ledgerLine.update();
     }
 }
 
@@ -159,9 +168,16 @@ function newNote() { //generate a new note on screen
 	randomValue = (Math.floor(Math.random() * notes.length));
     myGamePiece=notes[randomValue];
     myGamePiece.x=490;
+    ledgerLine=ledgerLineBelow1;
+    ledgerLine.x=480;
     if (points % 20 == 0) {
         pieceSpeed -= 1
-        }
+    }
+    if (myGamePiece == notes[11]) {
+        ledgerLine.speedX = pieceSpeed;
+    } else {
+    	ledgerLine.speedX = 0;
+    }
     myGamePiece.speedX = pieceSpeed;
 	myGameArea.stop();
 	myGameArea.start();
@@ -197,6 +213,9 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="G" && randomValue==1) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="G" && randomValue==9) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="A" && randomValue==6) {
                   points += 1;
                   newNote();
@@ -206,7 +225,13 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="C" && randomValue==7) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="C" && randomValue==11) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="D" && randomValue==3) {
+                  points += 1;
+                  newNote();
+              } else if (clicked_id=="D" && randomValue==10) {
                   points += 1;
                   newNote();
               } else {
@@ -229,6 +254,9 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="A" && randomValue==1) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="A" && randomValue==9) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="B" && randomValue==6) {
                   points += 1;
                   newNote();
@@ -238,7 +266,13 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="D" && randomValue==7) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="D" && randomValue==11) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="E" && randomValue==3) {
+                  points += 1;
+                  newNote();
+              } else if (clicked_id=="E" && randomValue==10) {
                   points += 1;
                   newNote();
               } else {
@@ -261,6 +295,9 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="B" && randomValue==1) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="B" && randomValue==9) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="C" && randomValue==6) {
                   points += 1;
                   newNote();
@@ -270,7 +307,13 @@ function checkButton(clicked_id) { //check for button input--start or answer
               } else if (clicked_id=="E" && randomValue==7) {
                   points += 1;
                   newNote();
+              } else if (clicked_id=="E" && randomValue==11) {
+                  points += 1;
+                  newNote();
               } else if (clicked_id=="F" && randomValue==3) {
+                  points += 1;
+                  newNote();
+              } else if (clicked_id=="F" && randomValue==10) {
                   points += 1;
                   newNote();
               } else {
